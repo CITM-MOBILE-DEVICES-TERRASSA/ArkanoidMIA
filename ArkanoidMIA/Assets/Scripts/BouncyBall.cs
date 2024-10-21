@@ -14,11 +14,16 @@ public class BouncyBall : MonoBehaviour
 
     public TextMeshProUGUI scoreTxt;
     public GameObject[] livesImage;
+    public GameObject gameOverPanel;
+    public GameObject YouWinPanel;
+    int brickCount;
     
     // Start is called before the first frame update
     void Start()
     {   
         rb = GetComponent<Rigidbody2D>();
+        brickCount = FindObjectOfType<LevelGenerator>().transform.childCount;
+        rb.velocity = Vector2.down*10f;
     }
 
     // Update is called once per frame
@@ -33,7 +38,7 @@ public class BouncyBall : MonoBehaviour
             else
             {
                 transform.position = Vector3.zero;
-                rb.velocity = Vector3.zero;
+                rb.velocity = Vector2.down*10f;
 
                 lives--;
                 livesImage[lives].SetActive(false);
@@ -55,11 +60,19 @@ public class BouncyBall : MonoBehaviour
 
             score +=10;
             scoreTxt.text = score.ToString("00000");
+            brickCount--;
+            if(brickCount <= 0)
+            {
+                YouWinPanel.SetActive(true);
+                Time.timeScale = 0;
+            }
         }
     }
 
     void GameOver()
     {
-        Debug.Log("GameOver");
+        gameOverPanel.SetActive(true);
+        Time.timeScale = 0;
+        Destroy(gameObject);
     }
 }
