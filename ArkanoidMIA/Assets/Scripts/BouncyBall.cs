@@ -10,7 +10,7 @@ public class BouncyBall : MonoBehaviour
     Rigidbody2D rb;
 
     int score = 0;
-    int lives = 5;
+    int lives = 3;
 
     public TextMeshProUGUI scoreTxt;
     public GameObject[] livesImage;
