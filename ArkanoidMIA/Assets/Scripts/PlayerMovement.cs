@@ -1,34 +1,39 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI; // Asegúrate de incluir esta línea para usar UI
+using UnityEngine.UI; // Para usar UI
 
 public class PlayerMovement : MonoBehaviour
 {
-    public float speed = 5;
-    public float maxX = 7.5f;
+    public float speed = 5f; // Velocidad de movimiento
+    public float maxX = 7.5f; // Limite de movimiento del paddle
     public Slider movementSlider; // Referencia al Slider
+    public RectTransform sliderHandleRect; // Referencia al RectTransform del handle (tu paddle)
 
     void Start()
     {
+        // Oculta el handle predeterminado del slider
         if (movementSlider != null)
         {
             movementSlider.onValueChanged.AddListener(OnSliderValueChanged);
         }
     }
 
+    // Este método se llama cuando cambia el valor del slider
     void OnSliderValueChanged(float value)
     {
-        float movementHorizontal = value * 2 - 1; // Convierte el rango de 0-1 a -1 a 1
-        if ((movementHorizontal > 0 && transform.position.x < maxX) || 
-            (movementHorizontal < 0 && transform.position.x > -maxX))
-        {
-            transform.position += Vector3.right * movementHorizontal * speed * Time.deltaTime;
-        }
+        // Convierte el valor del slider (0-1) en posición del paddle (-maxX a maxX)
+        float posX = Mathf.Lerp(-maxX, maxX, value);
+        Vector3 newPosition = new Vector3(posX, transform.position.y, transform.position.z);
+        transform.position = newPosition;
     }
 
     void Update()
     {
-        // No es necesario realizar nada en Update para el movimiento del slider
+        // Si el slider no está vinculado, no hacemos nada
+        if (movementSlider == null) return;
+
+        // Actualiza la posición del RectTransform del paddle basado en la posición actual
+        sliderHandleRect.position = Camera.main.WorldToScreenPoint(transform.position);
     }
 }
