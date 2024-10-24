@@ -231,7 +231,6 @@ MonoBehaviour:
   speed: 5
   maxX: 7
   movementSlider: {fileID: 1962275160}
-  sliderHandleRect: {fileID: 0}
 --- !u!212 &115722770
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -640,7 +639,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -557.96}
+  m_AnchoredPosition: {x: 0, y: -557.96094}
   m_SizeDelta: {x: 622.5, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &408289899
@@ -924,7 +923,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 59.69995, y: -63.200012}
+  m_AnchoredPosition: {x: 59.703125, y: -63.19922}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &548265224
@@ -983,36 +982,7 @@ MonoBehaviour:
   size: {x: 14, y: 7}
   offset: {x: 1, y: 0.6}
   brickPrefab: {fileID: 1780059000019610836, guid: e72875daced624c4f9f11e033f2424ef, type: 3}
-  gradient:
-    serializedVersion: 2
-    key0: {r: 0.09730455, g: 0, b: 0.9716981, a: 1}
-    key1: {r: 1, g: 0, b: 0.92679024, a: 1}
-    key2: {r: 0, g: 0, b: 0, a: 0}
-    key3: {r: 0, g: 0, b: 0, a: 0}
-    key4: {r: 0, g: 0, b: 0, a: 0}
-    key5: {r: 0, g: 0, b: 0, a: 0}
-    key6: {r: 0, g: 0, b: 0, a: 0}
-    key7: {r: 0, g: 0, b: 0, a: 0}
-    ctime0: 0
-    ctime1: 65535
-    ctime2: 0
-    ctime3: 0
-    ctime4: 0
-    ctime5: 0
-    ctime6: 0
-    ctime7: 0
-    atime0: 0
-    atime1: 65535
-    atime2: 0
-    atime3: 0
-    atime4: 0
-    atime5: 0
-    atime6: 0
-    atime7: 0
-    m_Mode: 0
-    m_ColorSpace: -1
-    m_NumColorKeys: 2
-    m_NumAlphaKeys: 2
+  rowConfigs: []
 --- !u!4 &607659092
 Transform:
   m_ObjectHideFlags: 0
@@ -1062,7 +1032,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -47.4}
+  m_AnchoredPosition: {x: 0, y: -47.398438}
   m_SizeDelta: {x: 622.5, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &609284934
@@ -1196,7 +1166,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -81.5, y: -73.6}
+  m_AnchoredPosition: {x: -81.5, y: -73.60156}
   m_SizeDelta: {x: 140, y: 55}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &730159213
@@ -1439,7 +1409,7 @@ Transform:
   m_GameObject: {fileID: 916929208}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: -3.14, z: 0}
   m_LocalScale: {x: 0.6, y: 0.6, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1459,6 +1429,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   minY: -5.5
   maxVelocity: 15
+  initialVelocityY: 10
   scoreTxt: {fileID: 730159213}
   livesImage:
   - {fileID: 1274478715}
@@ -1838,7 +1809,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -47.4}
+  m_AnchoredPosition: {x: 0, y: -47.398438}
   m_SizeDelta: {x: 622.5, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1651194596
@@ -2084,7 +2055,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -557.96}
+  m_AnchoredPosition: {x: 0, y: -557.96094}
   m_SizeDelta: {x: 622.5, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1745165265

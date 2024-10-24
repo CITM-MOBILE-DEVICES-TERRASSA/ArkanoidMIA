@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
@@ -7,7 +5,11 @@ public class BouncyBall : MonoBehaviour
 {
     public float minY = -5.5f;
     public float maxVelocity = 15f;
+    public float initialVelocityY = 10f; // Velocidad inicial vertical
     private Rigidbody2D rb;
+    private PlayerMovement paddle;
+    private bool gameStarted = false;
+    private Vector3 offsetFromPaddle;
 
     private int score = 0;
     private int lives = 3;
@@ -21,13 +23,25 @@ public class BouncyBall : MonoBehaviour
     private void Start()
     {   
         rb = GetComponent<Rigidbody2D>();
+        paddle = FindObjectOfType<PlayerMovement>();
         brickCount = FindObjectOfType<LevelGenerator>().transform.childCount;
-        rb.velocity = Vector2.down * 10f;
+        
+        // Calcular el offset inicial entre la pelota y el paddle
+        offsetFromPaddle = transform.position - paddle.transform.position;
+        
+        // Inicialmente la pelota no se mueve
+        rb.velocity = Vector2.zero;
+        ResetBall();
     }
 
     private void Update()
     {
-        if(transform.position.y < minY)
+        if (!gameStarted)
+        {
+            // Mantener la pelota sobre el paddle
+            transform.position = paddle.transform.position + offsetFromPaddle;
+        }
+        else if(transform.position.y < minY)
         {
             if(lives <= 0)
             {
@@ -35,10 +49,9 @@ public class BouncyBall : MonoBehaviour
             }
             else
             {
-                transform.position = Vector3.zero;
-                rb.velocity = Vector2.down * 10f;
                 lives--;
                 livesImage[lives].SetActive(false);
+                ResetBall();
             }
         }
 
@@ -48,10 +61,29 @@ public class BouncyBall : MonoBehaviour
         }
     }
 
+    public void StartMoving()
+    {
+        if (!gameStarted)
+        {
+            gameStarted = true;
+            rb.velocity = Vector2.up * initialVelocityY;
+        }
+    }
+
+    private void ResetBall()
+    {
+        gameStarted = false;
+        rb.velocity = Vector2.zero;
+        paddle.ResetPosition(); // Llamamos al nuevo método en PlayerMovement
+        transform.position = paddle.transform.position + offsetFromPaddle;
+    }
+
     private float velocityIncreaseFactor = 1.05f;
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
+        if (!gameStarted) return; // Ignorar colisiones si el juego no ha comenzado
+
         // Incrementar la magnitud de la velocidad en cada rebote
         float currentSpeed = rb.velocity.magnitude;
         Vector2 currentDirection = rb.velocity.normalized;
@@ -64,14 +96,12 @@ public class BouncyBall : MonoBehaviour
 
         rb.velocity = currentDirection * newSpeed;
 
-        // Detectar si la colisión es con un ladrillo
         if (collision.gameObject.CompareTag("Brick"))
         {
-            // Código para gestionar la destrucción del ladrillo
             Brick brick = collision.gameObject.GetComponent<Brick>();
             if (brick != null)
             {
-                brick.TakeDamage(); // Aplicamos daño al ladrillo
+                brick.TakeDamage();
                 if (brick.IsDestroyed())
                 {
                     Destroy(collision.gameObject);
