@@ -13,7 +13,7 @@ public class Brick : MonoBehaviour
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
 
-        // Establecer el color inicial según el hitPoints
+        // Establecer el color inicial según los hitPoints
         UpdateColor();
     }
 
@@ -43,5 +43,17 @@ public class Brick : MonoBehaviour
     public bool IsDestroyed()
     {
         return hitPoints <= 0;
+    }
+
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        // Aplicar daño al brick
+        TakeDamage();
+
+        // Si el ladrillo se destruye, notificamos al LevelManager
+        if (IsDestroyed())
+        {
+            FindObjectOfType<LevelManager>().BrickDestroyed();
+        }
     }
 }
