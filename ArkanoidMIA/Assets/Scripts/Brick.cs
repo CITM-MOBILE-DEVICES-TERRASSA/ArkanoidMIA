@@ -48,7 +48,7 @@ public class Brick : MonoBehaviour
     void OnCollisionEnter2D(Collision2D collision)
     {
         // Aplicar daño al brick
-        TakeDamage();
+        //TakeDamage();
 
         // Si el ladrillo se destruye, notificamos al LevelManager
         if (IsDestroyed())

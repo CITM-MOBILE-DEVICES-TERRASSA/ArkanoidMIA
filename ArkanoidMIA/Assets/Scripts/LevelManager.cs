@@ -7,31 +7,29 @@ public class LevelManager : MonoBehaviour
 
     void Start()
     {
-        // Cuenta el número total de bricks en la escena
         totalBricks = GameObject.FindGameObjectsWithTag("Brick").Length;
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.UpdateBrickCount(totalBricks);
+        }
     }
 
     public void BrickDestroyed()
     {
         totalBricks--;
+        
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.UpdateBrickCount(totalBricks);
+        }
+        
         if (totalBricks <= 0)
         {
-            // Cuando se destruyan todos los bricks, cargar el siguiente nivel
-            LoadNextLevel();
-        }
-    }
-
-    void LoadNextLevel()
-    {
-        string currentScene = SceneManager.GetActiveScene().name;
-
-        if (currentScene == "SampleScene")  // Si es el primer nivel
-        {
-            SceneManager.LoadScene("Level2");
-        }
-        else if (currentScene == "Level2")  // Si es el segundo nivel
-        {
-            SceneManager.LoadScene("SampleScene");
+            Debug.Log("Level Complete!");
+            if (GameManager.Instance != null)
+            {
+                GameManager.Instance.AdvanceToNextLevel();
+            }
         }
     }
 }
