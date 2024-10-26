@@ -54,6 +54,7 @@ public class GameManager : MonoBehaviour
         if (CurrentScore > HighScore)
         {
             HighScore = CurrentScore;
+            PlayerPrefs.SetInt("HighScore", HighScore); // Guarda el nuevo High Score en PlayerPrefs
         }
         SaveGame();
     }
@@ -115,13 +116,12 @@ public class GameManager : MonoBehaviour
             case "SampleScene":
                 return "Level2";
             case "Level2":
-                return "Level3";
-            case "Level3":
-                return null; // Fin del juego
+                return "SampleScene"; // Regresa al primer nivel en lugar de ir a un tercer nivel
             default:
                 return "SampleScene";
         }
     }
+
 
     public void DeleteSavedGame()
     {

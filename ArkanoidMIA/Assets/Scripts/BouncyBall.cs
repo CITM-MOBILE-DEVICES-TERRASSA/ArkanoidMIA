@@ -103,7 +103,8 @@ public class BouncyBall : MonoBehaviour
     {
         if (!gameStarted) return;
 
-        // ... (código de velocidad existente) ...
+        // Aumentar la velocidad de la bola al chocar
+        rb.velocity *= velocityIncreaseFactor;
 
         if (collision.gameObject.CompareTag("Brick"))
         {
