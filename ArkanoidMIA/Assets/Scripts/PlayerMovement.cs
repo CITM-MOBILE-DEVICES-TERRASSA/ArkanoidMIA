@@ -38,6 +38,39 @@ public class PlayerMovement : MonoBehaviour
         {
             ToggleAutoMode(!isAutoMode);
         }
+
+        // Manejar controles táctiles
+        HandleTouchInput();
+    }
+
+    void HandleTouchInput()
+    {
+        // Verifica si hay toques en la pantalla
+        if (Input.touchCount > 0)
+        {
+            Touch touch = Input.GetTouch(0);
+
+            if (touch.phase == TouchPhase.Moved || touch.phase == TouchPhase.Stationary)
+            {
+                // Obtiene la posición del toque en la pantalla
+                Vector2 touchPosition = touch.position;
+
+                // Convierte la posición del toque a la posición del mundo
+                Vector3 worldPosition = Camera.main.ScreenToWorldPoint(new Vector3(touchPosition.x, touchPosition.y, Camera.main.nearClipPlane));
+
+                // Mueve el paddle a la posición del toque, limitando a los bordes
+                float posX = Mathf.Clamp(worldPosition.x, -maxX, maxX);
+                Vector3 newPosition = new Vector3(posX, transform.position.y, transform.position.z);
+                transform.position = newPosition;
+
+                // Inicia el movimiento de la pelota si es la primera vez que se mueve
+                if (!hasMoved)
+                {
+                    hasMoved = true;
+                    ball.StartMoving();
+                }
+            }
+        }
     }
 
     void OnSliderValueChanged(float value)
