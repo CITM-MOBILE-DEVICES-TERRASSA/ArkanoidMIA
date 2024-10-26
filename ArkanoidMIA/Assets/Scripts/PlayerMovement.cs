@@ -3,8 +3,8 @@ using UnityEngine.UI;
 
 public class PlayerMovement : MonoBehaviour
 {
-    public float speed = 10f;
-    public float maxX = 7.5f;
+    public float speed = 5f;
+    public float maxX = 17.5f;
     public Slider movementSlider;
     private BouncyBall ball;
     private bool hasMoved = false;

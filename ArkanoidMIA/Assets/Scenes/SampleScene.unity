@@ -2093,7 +2093,7 @@ MonoBehaviour:
   gameOverPanel: {fileID: 2112911025}
   YouWinPanel: {fileID: 228204489}
   extraLifePowerUpPrefab: {fileID: 6335830032407141576, guid: 6dbd89c673036844e9b8e236249513e3, type: 3}
-  powerUpDropChance: 0.5
+  powerUpDropChance: 1
 --- !u!1 &939875340
 GameObject:
   m_ObjectHideFlags: 0

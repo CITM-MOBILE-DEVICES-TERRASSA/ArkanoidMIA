@@ -21,13 +21,17 @@ public class BouncyBall : MonoBehaviour
     public GameObject gameOverPanel;
     public GameObject YouWinPanel;
     private int brickCount;
+    private float autoLaunchDelay = 2f;
+    private float velocityIncreaseFactor = 1.05f;
+    public GameObject extraLifePowerUpPrefab;
+    public float powerUpDropChance = 0.1f;
 
     private void Start()
-    {   
+    {
         rb = GetComponent<Rigidbody2D>();
         paddle = FindObjectOfType<PlayerMovement>();
         brickCount = FindObjectOfType<LevelGenerator>().transform.childCount;
-        
+
         if (GameManager.Instance != null)
         {
             score = GameManager.Instance.CurrentScore;
@@ -35,9 +39,8 @@ public class BouncyBall : MonoBehaviour
             scoreTxt.text = score.ToString("00000");
             GameManager.Instance.OnLivesChanged += HandleLivesChanged;
         }
-        
+
         UpdateLivesDisplay();
-        
         offsetFromPaddle = transform.position - paddle.transform.position;
         rb.velocity = Vector2.zero;
         ResetBall();
@@ -55,7 +58,7 @@ public class BouncyBall : MonoBehaviour
     {
         lives = newLives;
         UpdateLivesDisplay();
-    }    
+    }
 
     private void UpdateLivesDisplay()
     {
@@ -71,9 +74,9 @@ public class BouncyBall : MonoBehaviour
         {
             transform.position = paddle.transform.position + offsetFromPaddle;
         }
-        else if(transform.position.y < minY)
+        else if (transform.position.y < minY)
         {
-            if(lives <= 0)
+            if (lives <= 0)
             {
                 GameOver();
             }
@@ -89,7 +92,7 @@ public class BouncyBall : MonoBehaviour
             }
         }
 
-        if(rb.velocity.magnitude > maxVelocity)
+        if (rb.velocity.magnitude > maxVelocity)
         {
             rb.velocity = Vector3.ClampMagnitude(rb.velocity, maxVelocity);
         }
@@ -100,11 +103,7 @@ public class BouncyBall : MonoBehaviour
         if (!gameStarted)
         {
             gameStarted = true;
-            if (launchCoroutine != null)
-            {
-                StopCoroutine(launchCoroutine);
-                launchCoroutine = null;
-            }
+            StopAutoLaunchCoroutine();
             rb.velocity = Vector2.up * initialVelocityY;
         }
     }
@@ -116,9 +115,21 @@ public class BouncyBall : MonoBehaviour
         paddle.ResetPosition(); 
         transform.position = paddle.transform.position + offsetFromPaddle;
 
-        if (launchCoroutine == null)
+        StartAutoLaunchCoroutine();
+    }
+
+    private void StartAutoLaunchCoroutine()
+    {
+        StopAutoLaunchCoroutine();
+        launchCoroutine = StartCoroutine(AutoLaunchBallAfterDelay(autoLaunchDelay));
+    }
+
+    private void StopAutoLaunchCoroutine()
+    {
+        if (launchCoroutine != null)
         {
-            launchCoroutine = StartCoroutine(AutoLaunchBallAfterDelay(3f));
+            StopCoroutine(launchCoroutine);
+            launchCoroutine = null;
         }
     }
 
@@ -128,15 +139,16 @@ public class BouncyBall : MonoBehaviour
 
         if (!gameStarted)
         {
-            gameStarted = true;
-            float angle = Random.Range(-45f, 45f);
-            rb.velocity = Quaternion.Euler(0, 0, angle) * Vector2.up * initialVelocityY;
+            StartMovingWithRandomAngle();
         }
     }
 
-    private float velocityIncreaseFactor = 1.05f;
-    public GameObject extraLifePowerUpPrefab;
-    public float powerUpDropChance = 0.1f;
+    private void StartMovingWithRandomAngle()
+    {
+        gameStarted = true;
+        float angle = Random.Range(-45f, 45f);
+        rb.velocity = Quaternion.Euler(0, 0, angle) * Vector2.up * initialVelocityY;
+    }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
@@ -183,16 +195,16 @@ public class BouncyBall : MonoBehaviour
         }
     }
 
-    void GameOver()
+    private void GameOver()
     {
         gameOverPanel.SetActive(true);
         Time.timeScale = 0;
-        
+
         if (GameManager.Instance != null)
         {
             GameManager.Instance.DeleteSavedGame();
         }
-        
+
         Destroy(gameObject);
     }
 }
