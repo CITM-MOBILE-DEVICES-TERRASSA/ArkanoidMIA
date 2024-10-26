@@ -24,7 +24,11 @@ public class BouncyBall : MonoBehaviour
     private float autoLaunchDelay = 2f;
     private float velocityIncreaseFactor = 1.05f;
     public GameObject extraLifePowerUpPrefab;
-    public float powerUpDropChance = 0.1f;
+    public float powerUpDropChance = 1.0f;
+
+    // Nuevas variables para el audio
+    public AudioClip impactSound; // Asigna el clip de sonido de impacto en el inspector
+    private AudioSource audioSource; // Componente AudioSource
 
     private void Start()
     {
@@ -44,6 +48,8 @@ public class BouncyBall : MonoBehaviour
         offsetFromPaddle = transform.position - paddle.transform.position;
         rb.velocity = Vector2.zero;
         ResetBall();
+
+        audioSource = GetComponent<AudioSource>(); // Obtener el componente AudioSource
     }
 
     private void OnDestroy()
@@ -153,6 +159,12 @@ public class BouncyBall : MonoBehaviour
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (!gameStarted) return;
+
+        // Reproducir el sonido de impacto
+        if (impactSound != null && audioSource != null)
+        {
+            audioSource.PlayOneShot(impactSound); // Reproducir el sonido de impacto
+        }
 
         rb.velocity *= velocityIncreaseFactor;
 
