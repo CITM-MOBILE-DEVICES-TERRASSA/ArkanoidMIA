@@ -1,15 +1,17 @@
 using UnityEngine;
 using TMPro;
+using System.Collections;
 
 public class BouncyBall : MonoBehaviour
 {
     public float minY = -5.5f;
     public float maxVelocity = 15f;
-    public float initialVelocityY = 10f; // Velocidad inicial vertical
+    public float initialVelocityY = 10f;
     private Rigidbody2D rb;
     private PlayerMovement paddle;
     private bool gameStarted = false;
     private Vector3 offsetFromPaddle;
+    private Coroutine launchCoroutine;
 
     private int score = 0;
     private int lives = 3;
@@ -20,21 +22,20 @@ public class BouncyBall : MonoBehaviour
     public GameObject YouWinPanel;
     private int brickCount;
 
-     private void Start()
+    private void Start()
     {   
         rb = GetComponent<Rigidbody2D>();
         paddle = FindObjectOfType<PlayerMovement>();
         brickCount = FindObjectOfType<LevelGenerator>().transform.childCount;
         
-        // Cargar datos guardados si existe el GameManager
         if (GameManager.Instance != null)
         {
             score = GameManager.Instance.CurrentScore;
             lives = GameManager.Instance.CurrentLives;
             scoreTxt.text = score.ToString("00000");
+            GameManager.Instance.OnLivesChanged += HandleLivesChanged;
         }
         
-        // Actualizar visualización de vidas
         UpdateLivesDisplay();
         
         offsetFromPaddle = transform.position - paddle.transform.position;
@@ -42,7 +43,21 @@ public class BouncyBall : MonoBehaviour
         ResetBall();
     }
 
-        private void UpdateLivesDisplay()
+    private void OnDestroy()
+    {
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.OnLivesChanged -= HandleLivesChanged;
+        }
+    }
+
+    private void HandleLivesChanged(int newLives)
+    {
+        lives = newLives;
+        UpdateLivesDisplay();
+    }    
+
+    private void UpdateLivesDisplay()
     {
         for (int i = 0; i < livesImage.Length; i++)
         {
@@ -50,7 +65,7 @@ public class BouncyBall : MonoBehaviour
         }
     }
 
-        private void Update()
+    private void Update()
     {
         if (!gameStarted)
         {
@@ -85,6 +100,11 @@ public class BouncyBall : MonoBehaviour
         if (!gameStarted)
         {
             gameStarted = true;
+            if (launchCoroutine != null)
+            {
+                StopCoroutine(launchCoroutine);
+                launchCoroutine = null;
+            }
             rb.velocity = Vector2.up * initialVelocityY;
         }
     }
@@ -93,14 +113,30 @@ public class BouncyBall : MonoBehaviour
     {
         gameStarted = false;
         rb.velocity = Vector2.zero;
-        paddle.ResetPosition(); // Llamamos al nuevo método en PlayerMovement
+        paddle.ResetPosition(); 
         transform.position = paddle.transform.position + offsetFromPaddle;
+
+        if (launchCoroutine == null)
+        {
+            launchCoroutine = StartCoroutine(AutoLaunchBallAfterDelay(3f));
+        }
+    }
+
+    private IEnumerator AutoLaunchBallAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+        if (!gameStarted)
+        {
+            gameStarted = true;
+            float angle = Random.Range(-45f, 45f);
+            rb.velocity = Quaternion.Euler(0, 0, angle) * Vector2.up * initialVelocityY;
+        }
     }
 
     private float velocityIncreaseFactor = 1.05f;
-
-    public GameObject extraLifePowerUpPrefab; // Prefab del power-up
-public float powerUpDropChance = 0.1f; // 10% de probabilidad de generar el power-up
+    public GameObject extraLifePowerUpPrefab;
+    public float powerUpDropChance = 0.1f;
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
@@ -125,7 +161,6 @@ public float powerUpDropChance = 0.1f; // 10% de probabilidad de generar el powe
                     scoreTxt.text = score.ToString("00000");
                     brickCount--;
 
-                   
                     if (Random.value < powerUpDropChance && GameManager.Instance.CurrentLives < GameManager.Instance.MaxLives)
                     {
                         Instantiate(extraLifePowerUpPrefab, brick.transform.position, Quaternion.identity);
@@ -148,13 +183,11 @@ public float powerUpDropChance = 0.1f; // 10% de probabilidad de generar el powe
         }
     }
 
-
     void GameOver()
     {
         gameOverPanel.SetActive(true);
         Time.timeScale = 0;
         
-        // Opcional: borrar el juego guardado cuando pierdes
         if (GameManager.Instance != null)
         {
             GameManager.Instance.DeleteSavedGame();

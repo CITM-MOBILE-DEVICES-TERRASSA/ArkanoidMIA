@@ -1,13 +1,10 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using TMPro; // Añade esta línea si usas TextMeshPro
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
-
-    public int MaxLives = 3; // Añade esta línea para establecer un límite máximo si lo deseas
-
+    public int MaxLives = 3;
     
     // Datos del juego
     public int CurrentScore { get; private set; }
@@ -16,9 +13,9 @@ public class GameManager : MonoBehaviour
     public string CurrentLevel { get; private set; }
     public int RemainingBricks { get; private set; }
 
-    // UI de Vidas
-    [SerializeField] private GameObject lifePrefab;
-    [SerializeField] private RectTransform livesContainer;
+    // Evento para notificar cambios en las vidas
+    public delegate void LivesChangedHandler(int newLives);
+    public event LivesChangedHandler OnLivesChanged;
 
     private void Awake()
     {
@@ -29,28 +26,18 @@ public class GameManager : MonoBehaviour
         }
         Instance = this;
         DontDestroyOnLoad(gameObject);
-
-        // Asegurarse de que tenemos la referencia correcta
-        if (livesContainer == null)
-        {
-            livesContainer = GameObject.Find("Canvas/Lives")?.GetComponent<RectTransform>();
-            if (livesContainer == null)
-            {
-                Debug.LogError("Lives container not found! Make sure there is a Canvas/Lives object in the scene.");
-            }
-        }
         
         LoadGame();
-        UpdateLives(); // Actualiza la UI al cargar el juego
     }
 
     public void AddLife()
     {
-        if (CurrentLives < MaxLives) // Solo añade vida si no has alcanzado el máximo
+        if (CurrentLives < MaxLives)
         {
             CurrentLives++;
-            Debug.Log($"Vida añadida. Vidas actuales: {CurrentLives}"); // Para debugging
-            UpdateLives();
+            OnLivesChanged?.Invoke(CurrentLives);
+            SaveGame();
+            Debug.Log($"Vida añadida. Vidas actuales: {CurrentLives}");
         }
     }
 
@@ -59,36 +46,9 @@ public class GameManager : MonoBehaviour
         if (CurrentLives > 0)
         {
             CurrentLives--;
-            UpdateLives();
+            OnLivesChanged?.Invoke(CurrentLives);
+            SaveGame();
         }
-    }
-
-    private void UpdateLives()
-    {
-        if (livesContainer == null)
-        {
-            Debug.LogError("Lives container is null!");
-            return;
-        }
-
-        // Limpiar las vidas existentes
-        foreach (Transform child in livesContainer)
-        {
-            Destroy(child.gameObject);
-        }
-
-        // Crear nuevos iconos de vida
-        for (int i = 0; i < CurrentLives; i++)
-        {
-            if (lifePrefab != null)
-            {
-                GameObject newLife = Instantiate(lifePrefab, livesContainer);
-                newLife.transform.SetSiblingIndex(i); // Mantiene el orden correcto
-            }
-        }
-
-        SaveGame();
-        Debug.Log($"Display actualizado. Mostrando {CurrentLives} vidas");
     }
 
     public void SaveGame()
@@ -111,6 +71,9 @@ public class GameManager : MonoBehaviour
         CurrentLevel = PlayerPrefs.GetString("CurrentLevel", "SampleScene");
         RemainingBricks = PlayerPrefs.GetInt("RemainingBricks", 0);
         
+        // Notificar del cambio de vidas cuando se carga el juego
+        OnLivesChanged?.Invoke(CurrentLives);
+        
         Debug.Log($"Game Loaded - Score: {CurrentScore}, Lives: {CurrentLives}, Level: {CurrentLevel}, Bricks: {RemainingBricks}");
     }
 
@@ -120,24 +83,17 @@ public class GameManager : MonoBehaviour
         if (CurrentScore > HighScore)
         {
             HighScore = CurrentScore;
-            PlayerPrefs.SetInt("HighScore", HighScore); // Guarda el nuevo High Score en PlayerPrefs
+            PlayerPrefs.SetInt("HighScore", HighScore);
         }
         SaveGame();
     }
-    
 
     public void UpdateLives(int lives)
     {
         CurrentLives = lives;
+        OnLivesChanged?.Invoke(CurrentLives);
         SaveGame();
     }
-
-    public void IncreaseLife()
-    {
-        CurrentLives++;
-        // Aquí podrías actualizar la UI si fuera necesario
-    }
-
 
     public void UpdateBrickCount(int remainingBricks)
     {
@@ -150,6 +106,7 @@ public class GameManager : MonoBehaviour
         CurrentScore = 0;
         CurrentLives = 3;
         CurrentLevel = "SampleScene";
+        OnLivesChanged?.Invoke(CurrentLives);
         SaveGame();
         SceneManager.LoadScene(CurrentLevel);
     }
@@ -179,7 +136,6 @@ public class GameManager : MonoBehaviour
         else
         {
             Debug.Log("¡Juego Completado!");
-            // Aquí podrías mostrar una pantalla de victoria final
         }
     }
 
@@ -190,12 +146,11 @@ public class GameManager : MonoBehaviour
             case "SampleScene":
                 return "Level2";
             case "Level2":
-                return "SampleScene"; // Regresa al primer nivel en lugar de ir a un tercer nivel
+                return "SampleScene";
             default:
                 return "SampleScene";
         }
     }
-
 
     public void DeleteSavedGame()
     {

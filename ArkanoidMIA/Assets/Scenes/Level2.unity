@@ -692,50 +692,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 355188678}
   m_CullTransparentMesh: 1
---- !u!1 &464378283
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 464378285}
-  - component: {fileID: 464378284}
-  m_Layer: 0
-  m_Name: GameManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &464378284
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 464378283}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5c0fafcde8be59e43835f5efd1935e74, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!4 &464378285
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 464378283}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 719.6266, y: 538.41095, z: -8.676696}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &584260828
 GameObject:
   m_ObjectHideFlags: 0
@@ -1549,6 +1505,8 @@ MonoBehaviour:
   - {fileID: 629772393}
   gameOverPanel: {fileID: 2022710055}
   YouWinPanel: {fileID: 1489023116}
+  extraLifePowerUpPrefab: {fileID: 0}
+  powerUpDropChance: 0.1
 --- !u!58 &811943026
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -3593,4 +3551,3 @@ SceneRoots:
   - {fileID: 1446685247}
   - {fileID: 675759476}
   - {fileID: 988908002}
-  - {fileID: 464378285}
