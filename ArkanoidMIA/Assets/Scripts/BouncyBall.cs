@@ -99,11 +99,13 @@ public class BouncyBall : MonoBehaviour
 
     private float velocityIncreaseFactor = 1.05f;
 
+    public GameObject extraLifePowerUpPrefab; // Prefab del power-up
+public float powerUpDropChance = 0.1f; // 10% de probabilidad de generar el power-up
+
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (!gameStarted) return;
 
-        // Aumentar la velocidad de la bola al chocar
         rb.velocity *= velocityIncreaseFactor;
 
         if (collision.gameObject.CompareTag("Brick"))
@@ -122,6 +124,13 @@ public class BouncyBall : MonoBehaviour
                     }
                     scoreTxt.text = score.ToString("00000");
                     brickCount--;
+
+                   
+                    if (Random.value < powerUpDropChance && GameManager.Instance.CurrentLives < GameManager.Instance.MaxLives)
+                    {
+                        Instantiate(extraLifePowerUpPrefab, brick.transform.position, Quaternion.identity);
+                    }
+
                     if (brickCount <= 0)
                     {
                         if (GameManager.Instance != null)
@@ -138,6 +147,7 @@ public class BouncyBall : MonoBehaviour
             }
         }
     }
+
 
     void GameOver()
     {

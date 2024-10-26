@@ -343,9 +343,10 @@ GameObject:
   - component: {fileID: 115722770}
   - component: {fileID: 115722769}
   - component: {fileID: 115722772}
+  - component: {fileID: 115722773}
   m_Layer: 0
   m_Name: Paddle
-  m_TagString: Untagged
+  m_TagString: Paddle
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -487,6 +488,33 @@ PolygonCollider2D:
       - {x: 0.5, y: 0}
       - {x: 0.05, y: 0.5}
   m_UseDelaunayMesh: 0
+--- !u!50 &115722773
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 115722768}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
 --- !u!1 &130534061
 GameObject:
   m_ObjectHideFlags: 0
@@ -2064,6 +2092,8 @@ MonoBehaviour:
   - {fileID: 11625034}
   gameOverPanel: {fileID: 2112911025}
   YouWinPanel: {fileID: 228204489}
+  extraLifePowerUpPrefab: {fileID: 6335830032407141576, guid: 6dbd89c673036844e9b8e236249513e3, type: 3}
+  powerUpDropChance: 0.5
 --- !u!1 &939875340
 GameObject:
   m_ObjectHideFlags: 0
@@ -2888,6 +2918,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c0fafcde8be59e43835f5efd1935e74, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  lifePrefab: {fileID: 6335830032407141576, guid: 6dbd89c673036844e9b8e236249513e3, type: 3}
+  livesContainer: {fileID: 548265223}
 --- !u!4 &1523143811
 Transform:
   m_ObjectHideFlags: 0

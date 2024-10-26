@@ -55,5 +55,7 @@ public class Brick : MonoBehaviour
         {
             FindObjectOfType<LevelManager>().BrickDestroyed();
         }
+
+        
     }
 }

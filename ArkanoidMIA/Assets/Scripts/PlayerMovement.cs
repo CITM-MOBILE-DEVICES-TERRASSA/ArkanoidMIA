@@ -46,4 +46,18 @@ public class PlayerMovement : MonoBehaviour
             movementSlider.value = initialSliderValue;
         }
     }
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.CompareTag("PowerUp"))
+        {
+            ExtraLife();
+            Destroy(other.gameObject); // Destruye el power-up después de recogerlo
+        }
+    }
+
+
+    private void ExtraLife()
+    {
+        GameManager.Instance.AddLife();
+    }
 }

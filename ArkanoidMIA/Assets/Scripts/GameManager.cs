@@ -1,9 +1,13 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using TMPro; // Añade esta línea si usas TextMeshPro
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
+
+    public int MaxLives = 3; // Añade esta línea para establecer un límite máximo si lo deseas
+
     
     // Datos del juego
     public int CurrentScore { get; private set; }
@@ -11,6 +15,10 @@ public class GameManager : MonoBehaviour
     public int CurrentLives { get; private set; }
     public string CurrentLevel { get; private set; }
     public int RemainingBricks { get; private set; }
+
+    // UI de Vidas
+    [SerializeField] private GameObject lifePrefab;
+    [SerializeField] private RectTransform livesContainer;
 
     private void Awake()
     {
@@ -21,8 +29,66 @@ public class GameManager : MonoBehaviour
         }
         Instance = this;
         DontDestroyOnLoad(gameObject);
+
+        // Asegurarse de que tenemos la referencia correcta
+        if (livesContainer == null)
+        {
+            livesContainer = GameObject.Find("Canvas/Lives")?.GetComponent<RectTransform>();
+            if (livesContainer == null)
+            {
+                Debug.LogError("Lives container not found! Make sure there is a Canvas/Lives object in the scene.");
+            }
+        }
         
         LoadGame();
+        UpdateLives(); // Actualiza la UI al cargar el juego
+    }
+
+    public void AddLife()
+    {
+        if (CurrentLives < MaxLives) // Solo añade vida si no has alcanzado el máximo
+        {
+            CurrentLives++;
+            Debug.Log($"Vida añadida. Vidas actuales: {CurrentLives}"); // Para debugging
+            UpdateLives();
+        }
+    }
+
+    public void LoseLife()
+    {
+        if (CurrentLives > 0)
+        {
+            CurrentLives--;
+            UpdateLives();
+        }
+    }
+
+    private void UpdateLives()
+    {
+        if (livesContainer == null)
+        {
+            Debug.LogError("Lives container is null!");
+            return;
+        }
+
+        // Limpiar las vidas existentes
+        foreach (Transform child in livesContainer)
+        {
+            Destroy(child.gameObject);
+        }
+
+        // Crear nuevos iconos de vida
+        for (int i = 0; i < CurrentLives; i++)
+        {
+            if (lifePrefab != null)
+            {
+                GameObject newLife = Instantiate(lifePrefab, livesContainer);
+                newLife.transform.SetSiblingIndex(i); // Mantiene el orden correcto
+            }
+        }
+
+        SaveGame();
+        Debug.Log($"Display actualizado. Mostrando {CurrentLives} vidas");
     }
 
     public void SaveGame()
@@ -58,12 +124,20 @@ public class GameManager : MonoBehaviour
         }
         SaveGame();
     }
+    
 
     public void UpdateLives(int lives)
     {
         CurrentLives = lives;
         SaveGame();
     }
+
+    public void IncreaseLife()
+    {
+        CurrentLives++;
+        // Aquí podrías actualizar la UI si fuera necesario
+    }
+
 
     public void UpdateBrickCount(int remainingBricks)
     {
